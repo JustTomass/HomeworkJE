@@ -37,8 +37,7 @@ jobs:
         run: dotnet tool install --global Microsoft.Playwright.CLI || echo "Already installed"
 
       - name: Install Playwright browsers
-        run: dotnet test
-        working-directory: PlaywrightTests
+        run: playwright install
 
       - name: Restore dependencies
         run: dotnet restore
