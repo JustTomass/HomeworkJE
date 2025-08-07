@@ -17,7 +17,7 @@ on:
           - visual_user
 
 jobs:
-  test:
+  AdditionalTask:
     runs-on: ubuntu-latest
 
     env:
@@ -40,7 +40,10 @@ jobs:
         run: dotnet build --no-restore
 
       - name: Install Playwright browsers
-        run: dotnet exec --runtimeconfig "${{ github.workspace }}/bin/Debug/net9.0/PlaywrightTests.runtimeconfig.json" playwright install
+        run: dotnet tool install --global Microsoft.Playwright.CLI
+
+      - name: Install Playwright browsers
+        run: playwright install
 
       - name: Run MSTest tests
         run: dotnet test --no-build --logger "trx"
