@@ -26,24 +26,21 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup .NET 9 SDK
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.304'
-
-      - name: Install Playwright CLI globally
-        run: dotnet tool install --global Microsoft.Playwright.CLI || echo "Already installed"
-
-      - name: Install Playwright browsers
-        run: dotnet tool run playwright install
 
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Build solution
         run: dotnet build --no-restore
+
+      - name: Install Playwright browsers
+        run: dotnet exec --runtimeconfig "${{ github.workspace }}/bin/Debug/net9.0/PlaywrightTests.runtimeconfig.json" playwright install
 
       - name: Run MSTest tests
         run: dotnet test --no-build --logger "trx"
