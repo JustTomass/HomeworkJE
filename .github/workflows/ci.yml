@@ -1,0 +1,53 @@
+name: Homework YAML pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_user:
+        description: 'Select the user to run tests as'
+        required: true
+        default: 'standard_user'
+        type: choice
+        options:
+          - standard_user
+          - locked_out_user
+          - problem_user
+          - performance_glitch_user
+          - error_user
+          - visual_user
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      selected_user: ${{ github.event.inputs.test_user }}
+      secret_password: ${{ secrets.SECRET_PASSWORD }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup .NET 9 SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.304'
+
+      - name: Install Playwright CLI globally
+        run: dotnet tool install --global Microsoft.Playwright.CLI || echo "Already installed"
+
+      - name: Install Playwright browsers
+        run: dotnet test
+        working-directory: PlaywrightTests
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build --no-restore
+
+      - name: Run MSTest tests
+        run: dotnet test --no-build --logger "trx"
+        env:
+          HW_Selected_User: ${{ env.selected_user }}
+          HW_S_Password: ${{ env.secret_password }}
