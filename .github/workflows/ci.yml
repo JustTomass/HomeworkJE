@@ -46,7 +46,7 @@ jobs:
         run: playwright install
 
       - name: Run MSTest tests
-        run: dotnet test --no-build --logger "trx"
+        run: dotnet test --no-build --logger "trx" --filter "Homework_JE_Pipeline" 
         env:
           HW_Selected_User: ${{ env.selected_user }}
           HW_S_Password: ${{ env.secret_password }}

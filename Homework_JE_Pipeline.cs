@@ -2,13 +2,23 @@ using System.Text.RegularExpressions;
 using Microsoft.Playwright;
 using Microsoft.Playwright.MSTest;
 
-namespace Homework_JE;
+namespace Homework_JE_Pipeline;
 
 [TestClass]
-public class Homework_JE : PageTest
+public class Homework_JE_Pipeline : PageTest
 {
+    private string? username;
+    private string? password;
+
+    [TestInitialize]
+    public void Pipeline()
+    {
+        username = Environment.GetEnvironmentVariable("HW_Selected_User") ?? "standard_user";
+        password = Environment.GetEnvironmentVariable("HW_S_Password") ?? "secret_sauce";
+    }
+
     [TestMethod]
-    public async Task PurchaseTShirt_SauceDemo()
+    public async Task LoginWithMultipleUsers()
     {
         await Page
             .GotoAsync("https://www.saucedemo.com/");
@@ -19,9 +29,9 @@ public class Homework_JE : PageTest
 
         // Fill the username and password fields.
         await Page
-            .FillAsync("[data-test='username']", "standard_user");
+            .FillAsync("[data-test='username']", username ?? string.Empty);
         await Page
-            .FillAsync("[data-test='password']", "secret_sauce");
+            .FillAsync("[data-test='password']", password ?? string.Empty);
 
         // Click the login button.
         await Page
